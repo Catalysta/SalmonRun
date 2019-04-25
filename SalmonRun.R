@@ -6,24 +6,62 @@
 data<-read.csv('pinkdata.csv')
 #choose only even-year salmon
 data<-data[which(data$BY%%2==0),]
-#reserve 1991-1996 for testing
+#reserve 1992-1996 for testing
 testdat<-data[which(data$BY>1990),]
 #Use 1950-1990 data for training
 data<-data[which(data$BY<=1990),]
 data<-as.data.frame(data)
 
+#Sort Stock levels by along shore distance, keep only the ones in the data
+data$Stock <- factor(data$Stock)
+data$Stock <- reorder(data$Stock, data$AlongShore_Distance)
+
+#Sort Region levels by along shore distance, keep only the ones in the data
+data$Region <- factor(data$Region)
+data$Region <- reorder(data$Region, data$AlongShore_Distance)
+
+#Add reproductive rate variable
+data$rep<-log(data$R/data$S)#reproduction rate
+summary(data$rep)
+
+#Add survival rate variable
+#this year's spawners are the recruits from two years ago
+surv<-rep(NA,478)
+for (s in levels(data$Stock)){
+  indices<-which(data$Stock==s)
+  l<-length(indices)
+  for (i in indices[1:(l-1)]){
+    surv[i+1]<-data$S[i+1]/data$R[i]
+  }
+}
+data<-cbind(data,surv)
+summary(data$surv)
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#0.0000  0.2686  0.4735  0.5062  0.7658  1.8715 
+which(data$surv>1) #this observation had more returning spawners than it had recruits - probably measurement error
+#[1] 458
+
 # plot even year salmon recruits versus spawners (in log scale)
 plot(log(data$R), log(data$S), main="Recruits vs. Spawners (Even Years)")
 abline(a=0,b=1, lwd=2)
-abline(lm(log(data$S)~log(data$R), data = data), col="red", lwd=2) #population appears to not be stable
-
-
-data$rep<-log(data$R/data$S)#reproduction rate
-summary(data$rep)
-plot(data$BY,data$rep, col=data$Region)
-abline(h=0)
-with(data[data$Region=="Alaska Peninsula",], plot(BY, rep))
+abline(lm(log(data$S)~log(data$R), data = data), 
+       col="red", lwd=2) #population appears to not be stable
 
 #plot reproduction rate by sites. (see if there is any spatial correlation here?)
-plot(data$Stock,data$rep, las=2)
+par(mar=c(10,2,2,2))
+plot(data$Stock,data$rep, las=2, main = "Reproduction Rate by Stock")
 
+#plot survival rate by sites
+plot(data[-458,"Stock"],data[-458,"surv"], las=2, main = "Survival Rate by Stock")
+#plot survival rate by region
+plot(data[-458,"Region"],data[-458,"surv"],las=2, main = "Survival Rate by Region")
+#plot survival rate by year 
+#suggests possibly to only look at data since 1970 (change in fisheries mgt?)
+plot(as.factor(data[-458,"BY"]), data[-458,"surv"], las=2, main = "Survival Rate by Year")
+
+#plot survival rate by region since 1972 (still leaves us with 313 data points)
+indices<-which(data$BY>1970 & data$surv<=1)
+plot(data[indices,"Region"],data[indices,"surv"],las=2, main = "Survival Rate by Region")
+
+
+par(mar=c(5,4,4,2)+0.1)
