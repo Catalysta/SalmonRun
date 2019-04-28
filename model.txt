@@ -1,0 +1,16 @@
+model
+{
+ k=1
+ for(i in 1:N.batches){
+       mu[i] ~ dnorm(theta, tau2.btw)
+	   tau[i] ~ dgamma(0.001,0.001)
+       for(j in 1:N.samples[i]) {
+			 S[k] ~ dbin(p[i],R2[i])
+             logit(p[i]) <- mu[i]
+			 k=k+1
+             }
+       }	    
+       tau2.btw ~ dgamma(0.001,0.001)
+       theta ~ dnorm(0.0, 0.001)
+
+}

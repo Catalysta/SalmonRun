@@ -1,0 +1,19 @@
+model
+		{
+			for(i in 1:N) {
+				r[i] ~ dbin(p[i],R2[i])
+				logit(p[i]) <- beta1*X1[i] + beta2 * X2[i] + beta3 * X3[i] + beta4*X4[i] + beta5 * X5[i] + beta6 * X6[i] +beta7*X7[i] + beta8 * X8[i] + beta9 * X9[i] +beta10*X10[i] + beta11 * X11[i] + beta12 * X12[i]
+			}
+			beta1 ~ dnorm(0.0,1)
+			beta2 ~ dnorm(0.0,1)
+			beta3 ~ dnorm(0.0,1)
+			beta4 ~ dnorm(0.0,1)
+			beta5 ~ dnorm(0.0,1)
+			beta6 ~ dnorm(0.0,1)
+			beta7 ~ dnorm(0.0,1)
+			beta8 ~ dnorm(0.0,1)
+			beta9 ~ dnorm(0.0,1)
+			beta10 ~ dnorm(0.0,1)
+			beta11 ~ dnorm(0.0,1)
+			beta12 ~ dnorm(0.0,1)
+		}

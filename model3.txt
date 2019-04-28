@@ -1,0 +1,9 @@
+model
+		{
+			for(i in 1:N) {
+				S[i] ~ dbin(p[i],R2[i])
+				logit(p[i]) <- beta1 + beta2 * X2[i]
+			}
+			beta1 ~ dnorm(0.0,0.0001)
+			beta2 ~ dnorm(0.0,0.0001)
+		}

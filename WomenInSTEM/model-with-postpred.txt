@@ -1,0 +1,21 @@
+model
+{
+ for(i in 1:N.batches){
+       mu[i] ~ dnorm(theta, tau2.btw)
+       for(j in 1:N.samples) {
+             y[j,i] ~ dnorm(mu[i], tau2.with)
+             }
+       }	   
+	   ypredb1 <- y[N.samples,1]
+	   ypredb2 <- y[N.samples,2]
+	   ypredb3 <- y[N.samples,3]
+	   ypredb4 <- y[N.samples,4]
+	   ypredb5 <- y[N.samples,5]
+	   ypredb6 <- y[N.samples,6]
+	   sigma.with ~ dunif(0, 1000) 
+       sigma.btw ~ dunif(0, 1000)	
+       tau2.with <- pow(sigma.with, -2)
+       tau2.btw <- pow(sigma.btw, -2)
+       theta ~ dnorm(0.0, 0.000001)
+
+}
