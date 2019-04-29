@@ -134,6 +134,7 @@ par(mar=c(5,4,4,2)+0.1)
 
 
 ############################JAGS####################################
+#Credit to Oksana Chkrebtii for JAGS starter code
 #Load rjags Library
 library(rjags)
 
@@ -396,10 +397,12 @@ dic2
 
 diffdic(dic1, dic2)
 
+detach(salmon.data)
+
 ###############################PREDICTION#############################
 
 # We wish to predict the number of salmon that will return
-# out of N = 100 salmon from Region 1.
+# out of N = 1000 salmon from each of the 12 Regions.
 
 salmon.observed = read.table("salmon.txt",header=T)
 # Remove NA (initial years for which survival rates not available)
@@ -411,7 +414,9 @@ salmon.observed$R2<-as.integer(100*salmon.observed$R2)
 salmon.observed<-salmon.observed[-which(salmon.observed$S==salmon.observed$R2),3:16]
 
 
-salmon.unobserved = c(NA,100,1,0,0,0,0,0,0,0,0,0,0,0)
+salmon.unobserved = cbind(rep(NA,12),rep(1000,12),diag(12))
+salmon.unobserved <- as.data.frame(salmon.unobserved)
+colnames(salmon.unobserved)<-colnames(salmon.observed)
 
 salmon = rbind(salmon.observed,salmon.unobserved)
 attach(salmon)  # each column now becomes its own variable
@@ -452,7 +457,18 @@ parameters = c("beta01",
                "beta10",
                "beta11",
                "beta12", 
-               "survpred")
+               "survpred01",
+               "survpred02",
+               "survpred03",
+               "survpred04",
+               "survpred05",
+               "survpred06",
+               "survpred07",
+               "survpred08",
+               "survpred09",
+               "survpred10",
+               "survpred11",
+               "survpred12")
 
 # Set initial values
 initsValues = list(
@@ -532,14 +548,16 @@ levels(testresult$reg)<-levels(data$Region)
 
 expmeans<-c(0.3219796,0.4524453,0.3157405,0.4622027,0.5962606,0.4840185,
           0.6164405,0.3325325,0.9012106,0.2088575,0.4819286,0.8395565)
-par(mfrow=c(4,3))
+par(mfrow=c(3,4))
 i=1
-for(r in unique(levels(testresult$reg))){
+for(r in levels(testresult$reg)){
   plot(testresult[which(testresult$reg==r),"year"],
        testresult[which(testresult$reg==r),"surv"],
        main = paste(r), xlab = "Year",
-       ylab="Survival Rate", ylim=c(0,1))
+       ylab="Survival Rate", ylim=c(0,1), xlim=c(1992,1996))
   abline(h=expmeans[i], col = "red")
+  abline(h=expmeans[i]-.10, col = "gray")
+  abline(h=expmeans[i]+.10, col = "gray")
   i<-(i+1)
 }
 

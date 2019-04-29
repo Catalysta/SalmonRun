@@ -4,7 +4,18 @@ model
 				S[i] ~ dbin(p[i],R2[i])
 				logit(p[i]) <- beta01*X1[i] + beta02 * X2[i] + beta03 * X3[i] + beta04 * X4[i] + beta05 * X5[i] + beta06 * X6[i] + beta07 * X7[i] + beta08 * X8[i] + beta09 * X9[i] + beta10 * X10[i] + beta11 * X11[i] + beta12 * X12[i]
 			}
-			survpred <- S[N]
+			survpred01 <- S[N-11]
+			survpred02 <- S[N-10]
+			survpred03 <- S[N-9]
+			survpred04 <- S[N-8]
+			survpred05 <- S[N-7]
+			survpred06 <- S[N-6]
+			survpred07 <- S[N-5]
+			survpred08 <- S[N-4]
+			survpred09 <- S[N-3]
+			survpred10 <- S[N-2]
+			survpred11 <- S[N-1]
+			survpred12 <- S[N]
 			beta01 ~ dnorm(0.0,.5)
 			beta02 ~ dnorm(0.0,.5)
 			beta03 ~ dnorm(0.0,.5)
