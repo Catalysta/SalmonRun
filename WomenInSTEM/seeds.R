@@ -20,7 +20,7 @@ N = dim(seeds)[1]
 beta = rnorm(500, 0, 1000)							# try prior std. dev. of 2 instead
 hist(exp(beta)/(1+exp(beta)))
 
-y = rnorm(500, rep(0, 500), runif(500, 0, 1000))	# try prior std. dev. of 3 instead
+y = rnorm(500, rep(0, 500), rep(2,500))	# try prior std. dev. of 3 instead
 hist(exp(y)/(1+exp(y)))
 
 ######################################
